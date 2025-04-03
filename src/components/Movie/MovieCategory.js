@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { authorize } from 'passport';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import styles from '../MovieCategory.module.css'; 
+import styles from '../MovieCategory.module.css';
 import Skeleton from '../UI/Skeleton';
 
 const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
@@ -16,7 +15,7 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [loadedImages, setLoadedImages] = useState({});
-  
+
   // Thêm cấu hình cho slider
   const topMoviesSettings = {
     dots: false,
@@ -57,7 +56,7 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
   };
 
   const handleImageLoad = (id) => {
-    if (!loadedImages[id]) {  
+    if (!loadedImages[id]) {
       setTimeout(() => {
         setLoadedImages(prev => ({
           ...prev,
@@ -83,9 +82,9 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                 ...movie,
                 ...detailData.movie,
                 episodes: detailData.episodes,
-                
-                thumb_url: movie.thumb_url.startsWith('http') 
-                  ? movie.thumb_url 
+
+                thumb_url: movie.thumb_url.startsWith('http')
+                  ? movie.thumb_url
                   : `${data.pathImage}${movie.thumb_url}`,
                 poster_url: movie.poster_url.startsWith('http')
                   ? movie.poster_url
@@ -95,8 +94,8 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
               console.error(`Error fetching details for ${movie.slug}:`, error);
               return {
                 ...movie,
-                thumb_url: movie.thumb_url.startsWith('http') 
-                  ? movie.thumb_url 
+                thumb_url: movie.thumb_url.startsWith('http')
+                  ? movie.thumb_url
                   : `${data.pathImage}${movie.thumb_url}`,
                 poster_url: movie.poster_url.startsWith('http')
                   ? movie.poster_url
@@ -142,12 +141,12 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
 
   const handlePrev = () => {
     if (isTransitioning) return;
-    
+
     setIsTransitioning(true);
-    setActiveIndex((prevIndex) => 
+    setActiveIndex((prevIndex) =>
       prevIndex === 0 ? featuredMovies.length - 1 : prevIndex - 1
     );
-    
+
     setTimeout(() => {
       setIsTransitioning(false);
     }, 500);
@@ -155,16 +154,16 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
 
   const handleNext = () => {
     if (isTransitioning) return;
-    
+
     setIsTransitioning(true);
-    
+
     const nextIndex = activeIndex === featuredMovies.length - 1 ? 0 : activeIndex + 1;
     const nextMovie = featuredMovies[nextIndex];
     const img = new Image();
     img.src = nextMovie.thumb_url || nextMovie.poster_url || '/placeholder.jpg';
-    
+
     setActiveIndex(nextIndex);
-    
+
     setTimeout(() => {
       setIsTransitioning(false);
     }, 500);
@@ -174,15 +173,15 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
     <div className="movie-section mb-5">
       {featuredMovies.length > 0 && (
         <div className="featured-movies mb-5">
-          <div className="position-relative" style={{ 
+          <div className="position-relative" style={{
             height: '800px',
-            width:'100%',
+            width: '100%',
             overflow: 'hidden',
             background: '#000'
           }}>
             {featuredMovies[activeIndex] && (
               <>
-                <div 
+                <div
                   className="position-absolute top-0 start-0 w-100 h-100"
                   style={{
                     backgroundImage: `url(${featuredMovies[activeIndex].backdrop_url || featuredMovies[activeIndex].poster_url || featuredMovies[activeIndex].thumb_url})`,
@@ -194,8 +193,8 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                     zIndex: 1
                   }}
                 />
-                
-                <div 
+
+                <div
                   className="position-absolute top-0 start-0 w-100 h-100"
                   style={{
                     background: 'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)',
@@ -204,37 +203,37 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                 />
               </>
             )}
-            
-            <div 
-              className="position-absolute top-0 start-0 w-100 h-100" 
+
+            <div
+              className="position-absolute top-0 start-0 w-100 h-100"
               style={{
                 background: 'radial-gradient(circle at center, rgba(255,0,0,0.07) 0%, rgba(0,0,0,0) 70%)',
                 zIndex: 2
               }}
             />
-            
+
             <div className="d-flex justify-content-center align-items-center h-100" style={{ zIndex: 3, position: 'relative' }}>
               {featuredMovies.map((movie, index) => {
                 const totalItems = featuredMovies.length;
                 let position = (index - activeIndex + totalItems) % totalItems;
-                
+
                 if (position > Math.floor(totalItems / 2)) {
                   position = position - totalItems;
                 }
-                
+
                 let zIndex = 4 - Math.abs(position);
-                let scale = position === 0 ? 1 : 1 - Math.abs(position) * 0.2;  
+                let scale = position === 0 ? 1 : 1 - Math.abs(position) * 0.2;
                 let translateX = position * 250;
                 let opacity = 1 - Math.abs(position) * 0.2;
                 let visibility = Math.abs(position) <= 2 ? 'visible' : 'hidden';
                 let rotation = position * -15;
                 const imageId = `featured-${movie.slug}`;
-                
+
                 return (
-                  <div 
+                  <div
                     key={imageId}
                     className="position-absolute"
-                    style={{ 
+                    style={{
                       width: '400px',
                       visibility,
                       zIndex,
@@ -266,9 +265,9 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                   >
                     <div className="card bg-dark border-0">
                       <div className={`position-relative ${styles.moviePoster}`}>
-                        <div 
+                        <div
                           className={`blur-load ${loadedImages[imageId] ? 'loaded' : ''}`}
-                          style={{ 
+                          style={{
                             height: '600px',
                             backgroundImage: `url(${movie.thumb_url || movie.poster_url})`,
                             backgroundSize: 'cover',
@@ -285,12 +284,12 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                             alt={movie.name}
                             className="card-img-top"
                             loading="lazy"
-                            style={{ 
+                            style={{
                               height: '600px',
-                              objectFit: 'cover', 
+                              objectFit: 'cover',
                               borderRadius: '15px 15px 0 0',
-                              boxShadow: position === 0 
-                                ? '0 10px 30px rgba(255, 0, 0, 0.3)' 
+                              boxShadow: position === 0
+                                ? '0 10px 30px rgba(255, 0, 0, 0.3)'
                                 : '0 5px 15px rgba(0, 0, 0, 0.5)'
                             }}
                             onLoad={() => handleImageLoad(imageId)}
@@ -300,9 +299,9 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                             }}
                           />
                         </div>
-                        
+
                         {/* Overlay gradient */}
-                        <div 
+                        <div
                           className="position-absolute top-0 start-0 w-100 h-100"
                           style={{
                             background: 'linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)',
@@ -312,17 +311,17 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                           }}
                         />
 
-                    
-                        <Link 
+
+                        <Link
                           href={`/movie/${movie.slug}`}
                           className={`btn btn-sm ${styles.watchButton}`}
                         >
                           <i className="bi bi-play-fill"></i>
                         </Link>
-                        
+
                         {/* Badge thông tin phát hành: số tập & ngôn ngữ */}
                         <div className="position-absolute bottom-0 start-0 m-3" style={{ zIndex: 5 }}>
-                          
+
                         </div>
                       </div>
                     </div>
@@ -330,7 +329,7 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                 );
               })}
             </div>
-            
+
             <div className="position-absolute bottom-0 start-50 translate-middle-x mb-4" style={{ zIndex: 10 }}>
               <div className="d-flex gap-2">
                 {featuredMovies.map((_, index) => (
@@ -364,9 +363,9 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                   <div key={imageId} className={styles.sliderItem}>
                     <div className={`card bg-dark border-0 ${styles.movieCard}`}>
                       <div className={`position-relative ${styles.moviePoster}`}>
-                        <div 
-                          className={`blur-load ${loadedImages[imageId] ? 'loaded' : ''}`} 
-                          style={{ 
+                        <div
+                          className={`blur-load ${loadedImages[imageId] ? 'loaded' : ''}`}
+                          style={{
                             backgroundImage: `url(${movie.thumb_url})`,
                             backgroundSize: 'cover',
                             filter: loadedImages[imageId] ? 'none' : 'blur(10px)',
@@ -383,10 +382,10 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                             className={`card-img-top ${styles.movieImage}`}
                             alt={movie.name}
                             loading="lazy"
-                            style={{ 
-                              height: '300px', 
-                              objectFit: 'cover', 
-                              borderRadius: '8px' 
+                            style={{
+                              height: '300px',
+                              objectFit: 'cover',
+                              borderRadius: '8px'
                             }}
                             onLoad={() => handleImageLoad(imageId)}
                             onError={(e) => {
@@ -395,18 +394,18 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                             }}
                           />
                         </div>
-                        
+
                         {/* Overlay gradient */}
                         <div className={styles.overlay}></div>
-                        
+
                         {/* Nút xem phim không có icon */}
-                        <Link 
+                        <Link
                           href={`/movie/${movie.slug}`}
                           className={`btn btn-sm ${styles.watchButton}`}
                         >
-                        <i className="bi bi-play-fill"></i>
+                          <i className="bi bi-play-fill"></i>
                         </Link>
-                        
+
                         {/* Badges năm & chất lượng */}
                         <div className={styles.yearQualityBadges}>
                           <span className="badge bg-danger">
@@ -418,7 +417,7 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                             </span>
                           )}
                         </div>
-                        
+
                         {/* Badge thông tin phát hành: số tập & ngôn ngữ */}
                         <div className={styles.episodeInfoBadge}>
                           {movie.episodes && movie.episodes[0] && (
@@ -430,7 +429,7 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                             {movie.lang || 'Vietsub'}
                           </span>
                         </div>
-                        
+
                         {/* Thêm badge loại phim ở góc trên trái */}
                         <div className={styles.categoryBadge}>
                           <span className="badge bg-secondary">
@@ -438,7 +437,7 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
                           </span>
                         </div>
                       </div>
-                      
+
                       <div className="card-body">
                         <h6 className="card-title text-white mb-1 text-truncate">
                           {movie.name}
@@ -458,113 +457,113 @@ const MovieCategory = ({ title, endpoint, showTopMovies = true }) => {
 
       <h3 className="text-white mb-4">{title}</h3>
       <div className="row g-1"> {/* Changed from g-3 to g-1 for tighter spacing */}
-        {loading && page === 1 
+        {loading && page === 1
           ? [...Array(12)].map((_, i) => (
-              <div key={`skeleton-${i}`} className="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-1-7">
-                <div className="card h-100 bg-dark border-0">
-                  <Skeleton height="250px" />
-                  <div className="card-body">
-                    <Skeleton height="18px" width="85%" />
-                    <div className="mt-1">
-                      <Skeleton height="14px" width="65%" />
-                    </div>
+            <div key={`skeleton-${i}`} className="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-1-7">
+              <div className="card h-100 bg-dark border-0">
+                <Skeleton height="250px" />
+                <div className="card-body">
+                  <Skeleton height="18px" width="85%" />
+                  <div className="mt-1">
+                    <Skeleton height="14px" width="65%" />
                   </div>
                 </div>
               </div>
-            ))
+            </div>
+          ))
           : movies.slice(0, page * 7).map((movie) => {
-              const imageId = `grid-${movie.slug}`;
-              return (
-                <div key={movie.slug} className="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-1-7">
-                  <div className={`card h-100 bg-dark border-0 ${styles.movieCard}`}>
-                    <div className={`position-relative ${styles.moviePoster}`}>
-                      <div 
-                        className={`blur-load ${loadedImages[imageId] ? 'loaded' : ''}`}
-                        style={{ 
-                          backgroundImage: `url(${movie.thumb_url}?blur=30)`,
-                          height: '250px'
+            const imageId = `grid-${movie.slug}`;
+            return (
+              <div key={movie.slug} className="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-1-7">
+                <div className={`card h-100 bg-dark border-0 ${styles.movieCard}`}>
+                  <div className={`position-relative ${styles.moviePoster}`}>
+                    <div
+                      className={`blur-load ${loadedImages[imageId] ? 'loaded' : ''}`}
+                      style={{
+                        backgroundImage: `url(${movie.thumb_url}?blur=30)`,
+                        height: '250px'
+                      }}
+                    >
+                      {!loadedImages[imageId] && (
+                        <Skeleton height="250px" />
+                      )}
+                      <img
+                        src={movie.thumb_url}
+                        className={`card-img-top ${styles.movieImage}`}
+                        alt={movie.name}
+                        loading="lazy"
+                        style={{
+                          height: '250px',
+                          objectFit: 'cover',
+                          borderRadius: '4px' /* Added reduced border radius */
                         }}
-                      >
-                        {!loadedImages[imageId] && (
-                          <Skeleton height="250px" />
-                        )}
-                        <img
-                          src={movie.thumb_url}
-                          className={`card-img-top ${styles.movieImage}`}
-                          alt={movie.name}
-                          loading="lazy"
-                          style={{ 
-                            height: '250px', 
-                            objectFit: 'cover',
-                            borderRadius: '4px' /* Added reduced border radius */
-                          }}
-                          onLoad={() => handleImageLoad(imageId)}
-                          onError={(e) => {
-                            e.target.src = "/placeholder.jpg";
-                            handleImageLoad(imageId);
-                          }}
-                        />
-                      </div>
-                      
-                      {/* Overlay gradient */}
-                      <div className={styles.overlay}></div>
-                      
-                      {/* Nút xem phim không có icon */}
-                      <Link 
-                        href={`/movie/${movie.slug}`}
-                        className={`btn btn-sm ${styles.watchButton}`}
-                      >
-                       <i className="bi bi-play-circle"></i>
-                      </Link>
-                      
-                      {/* Badges năm & chất lượng */}
-                      <div className={styles.yearQualityBadges}>
-                        <span className="badge bg-danger">
-                          {movie.year}
-                        </span>
-                        {movie.quality && (
-                          <span className="badge bg-primary ms-1">
-                            {movie.quality}
-                          </span>
-                        )}
-                      </div>
-                      
-                      {/* Badge thông tin phát hành: số tập & ngôn ngữ */}
-                      <div className={styles.episodeInfoBadge}>
-                        {movie.episodes && movie.episodes[0] && (
-                          <span className="badge bg-success me-1">
-                            {movie.episodes[0].server_data.length} tập
-                          </span>
-                        )}
-                        <span className="badge bg-info">
-                          {movie.lang || 'Vietsub'}
-                        </span>
-                      </div>
-                      
-                      {/* Thêm badge loại phim ở góc trên trái */}
-                      <div className={styles.categoryBadge}>
-                        <span className="badge bg-secondary">
-                          {movie.type === 'series' ? 'Phim bộ' : 'Phim lẻ'}
-                        </span>
-                      </div>
+                        onLoad={() => handleImageLoad(imageId)}
+                        onError={(e) => {
+                          e.target.src = "/placeholder.jpg";
+                          handleImageLoad(imageId);
+                        }}
+                      />
                     </div>
-                    
-                    <div className="card-body">
-                      <h6 className="card-title text-white mb-1 text-truncate">
-                        {movie.name}
-                      </h6>
-                      <p className="card-text small text-muted text-truncate mb-1">
-                        {movie.origin_name}
-                      </p>
-                    
+
+                    {/* Overlay gradient */}
+                    <div className={styles.overlay}></div>
+
+                    {/* Nút xem phim không có icon */}
+                    <Link
+                      href={`/movie/${movie.slug}`}
+                      className={`btn btn-sm ${styles.watchButton}`}
+                    >
+                      <i className="bi bi-play-circle"></i>
+                    </Link>
+
+                    {/* Badges năm & chất lượng */}
+                    <div className={styles.yearQualityBadges}>
+                      <span className="badge bg-danger">
+                        {movie.year}
+                      </span>
+                      {movie.quality && (
+                        <span className="badge bg-primary ms-1">
+                          {movie.quality}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Badge thông tin phát hành: số tập & ngôn ngữ */}
+                    <div className={styles.episodeInfoBadge}>
+                      {movie.episodes && movie.episodes[0] && (
+                        <span className="badge bg-success me-1">
+                          {movie.episodes[0].server_data.length} tập
+                        </span>
+                      )}
+                      <span className="badge bg-info">
+                        {movie.lang || 'Vietsub'}
+                      </span>
+                    </div>
+
+                    {/* Thêm badge loại phim ở góc trên trái */}
+                    <div className={styles.categoryBadge}>
+                      <span className="badge bg-secondary">
+                        {movie.type === 'series' ? 'Phim bộ' : 'Phim lẻ'}
+                      </span>
                     </div>
                   </div>
+
+                  <div className="card-body">
+                    <h6 className="card-title text-white mb-1 text-truncate">
+                      {movie.name}
+                    </h6>
+                    <p className="card-text small text-muted text-truncate mb-1">
+                      {movie.origin_name}
+                    </p>
+
+                  </div>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
       </div>
       <div className="text-center mt-4">
-        <button 
+        <button
           className="btn btn-outline-danger px-4"
           onClick={loadMore}
           disabled={loading}

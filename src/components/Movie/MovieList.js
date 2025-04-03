@@ -13,7 +13,7 @@ const MovieList = () => {
     },
 
   ]);
-  
+
   const [loading, setLoading] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +28,7 @@ const MovieList = () => {
     try {
       const response = await fetch(`https://ophim1.com/phim${endpoint}`);
       const data = await response.json();
-      
+
       if (data.items) {
         const moviePromises = data.items.map(async (movie) => {
           const movieDetail = await fetchMovieDetail(movie.slug);
@@ -40,17 +40,17 @@ const MovieList = () => {
 
         // Lọc theo category
         if (categoryId === 'series') {
-          movies = movies.filter(movie => 
-            movie.type === 'series' || 
+          movies = movies.filter(movie =>
+            movie.type === 'series' ||
             movie.episode_current !== 'Full' ||
-            movie.category?.some(cat => 
+            movie.category?.some(cat =>
               cat.name.toLowerCase().includes('phim bộ'))
           );
         } else if (categoryId === 'single') {
-          movies = movies.filter(movie => 
-            movie.type === 'single' || 
+          movies = movies.filter(movie =>
+            movie.type === 'single' ||
             movie.episode_current === 'Full' ||
-            movie.category?.some(cat => 
+            movie.category?.some(cat =>
               cat.name.toLowerCase().includes('phim lẻ'))
           );
         }
@@ -69,19 +69,19 @@ const MovieList = () => {
       try {
         setLoading(true);
         const updatedCategories = [...categories];
-        
+
         for (let i = 0; i < categories.length; i++) {
           const movies = await fetchMoviesForCategory(
             categories[i].endpoint,
             categories[i].id
           );
-          
+
           updatedCategories[i] = {
             ...categories[i],
             movies: movies
           };
         }
-        
+
         setCategories(updatedCategories);
       } catch (error) {
         console.error("Lỗi khi fetch dữ liệu phim:", error);
@@ -143,9 +143,9 @@ const MovieList = () => {
                   {selectedMovie.name}
                   <small className="text-muted ms-2">({selectedMovie.year})</small>
                 </h5>
-                <button 
-                  type="button" 
-                  className="btn-close btn-close-white" 
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
                   onClick={() => setShowModal(false)}
                 ></button>
               </div>
@@ -162,17 +162,17 @@ const MovieList = () => {
                           e.target.src = "";
                         }}
                       />
-                      <div className="position-absolute bottom-0 start-0 end-0 p-2 text-center" 
+                      <div className="position-absolute bottom-0 start-0 end-0 p-2 text-center"
                         style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.8))' }}>
                         <div className="d-flex gap-2 justify-content-center">
-                          <button 
+                          <button
                             className="btn btn-danger"
                             onClick={() => setShowTrailer(true)} // Show trailer
                           >
                             <i className="fas fa-play me-2"></i>
                             Xem trailer
                           </button>
-                          <button 
+                          <button
                             className="btn btn-danger"
                             onClick={() => setShowPlayer(true)} // Play the movie
                           >
@@ -214,14 +214,14 @@ const MovieList = () => {
                 )}
               </div>
               <div className="modal-footer border-secondary">
-                <button 
-                  type="button" 
-                  className="btn btn-secondary" 
+                <button
+                  type="button"
+                  className="btn btn-secondary"
                   onClick={() => setShowModal(false)}
                 >
                   Đóng
                 </button>
-                <Link 
+                <Link
                   href={`/movie/${selectedMovie.slug}`}
                   className="btn btn-danger"
                 >

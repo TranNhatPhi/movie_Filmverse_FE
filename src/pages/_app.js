@@ -7,15 +7,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
       <Head>
-        <title>Đồ án Nhóm 6 </title>
+        <title>flim movie</title>
         <meta name="description" content="Xem phim trực tuyến miễn phí HD" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         {/* Đã loại bỏ stylesheet Bootstrap Icons - chuyển sang _document.js */}
       </Head>
-      
+
       <Component {...pageProps} />
-      
+
       <style jsx global>{`
         body {
           background-color: #000;
